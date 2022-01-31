@@ -1,5 +1,7 @@
 package com.springwithAWS.book.springboot.web;
 
+import com.springwithAWS.book.springboot.config.auth.LoginUser;
+import com.springwithAWS.book.springboot.config.auth.dto.SessionUser;
 import com.springwithAWS.book.springboot.service.posts.PostsService;
 import com.springwithAWS.book.springboot.web.dto.PostResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequiredArgsConstructor
 public class IndexController {
@@ -16,8 +20,11 @@ public class IndexController {
     private final PostsService postsService;
 
     @GetMapping("/")
-    public String index(Model model){
+    public String index(Model model, @LoginUser SessionUser user){
         model.addAttribute("posts", postsService.findAllDesc());
+        if(user != null){
+            model.addAttribute("userName", user.getName());
+        }
         return "index";
     }
 
